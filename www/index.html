@@ -62,7 +62,7 @@
                             serverToConnect = this.server_ip;
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
-                            showBubble("Error: " + xhr.status + " Throw: " + thrownError);
+                            showBubble("Error: " + xhr.status + " Throw: " + thrownError + " URL: " + this.url);
                         },
                         complete: function() {
                             setTimeout(chooseServer, 1000);

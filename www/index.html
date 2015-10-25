@@ -1,36 +1,122 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <title>CCATT Viewer</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CCATT Viewer</title>
+    <link rel="stylesheet" href="jquery.mobile-1.4.5.min.css">
+    <script src="jquery.min.js"></script>
+    <script src="jquery.mobile-1.4.5.min.js"></script>
+    
+    <script type="text/javascript">
+        var serverList;
+        var serverToConnect = "";
+        var serverToTry = "primary";
         
-        <script type="text/javascript" src="js/index.js"></script>
-    </head>
-    <body>
-        <script type="text/javascript">
-            
-            function openBrowser()
-            {
-                if(openBrowser.count == undefined)
-                    openBrowser.count = 1;
-                else
-                    openBrowser.count++;
+        $.ajax({
+            url: "bubble.html.inc",
+            success: function(response) {
+                $('#include_bubble').html(response);
+            }
+        });
+        
+        function showBubble(msg) {
+            $('#bubble_msg').html(msg);
+            $('#include_bubble').show();
+        }
+        
+        function hideBubble() {
+            $('#include_bubble').hide();
+        }
+        
+        $(document).on("pageinit", function(event) {
+            hideBubble();
+        });
+        
+        function connectServer() {
+            hideBubble();
+            window.location.replace("http://" + serverToConnect + ":3333/view/");
+        }
+        
+        function chooseServer() {
+            if(serverToConnect == "") {
+                var ip = serverList[serverToTry];
                 
-                document.body.innerHTML = openBrowser.count;
+                serverToTry = (serverToTry == "primary") ? "secondary" : "primary";
                 
-                if(openBrowser.count == 3)
-                {
-                    window.location = "http://apache.org";
+                if(ip != "") {
+                    $.ajax({
+                        url: "http://" + ip + ":3333/view/timestamp.php",
+                        server_ip: ip,
+                        beforeSend: function() {
+                            showBubble("Trying Server " + this.server_ip + " ...");
+                        },
+                        success: function(response) {
+                            serverToConnect = this.server_ip;
+                        },
+                        complete: function() {
+                            setTimeout(chooseServer, 1000);
+                        },
+                    });
+                } else {
+                    chooseServer();
+                }
+            } else {
+                connectServer();
+            }
+        }
+        
+        // Base on: http://stackoverflow.com/questions/15692186
+        $(document).on("pageshow", function() {
+            setTimeout(function() {
+                if(!localStorage.getItem('server')) {
+                    $("#dialog_server").popup("open");
                 }
                 
-                setTimeout(openBrowser, 1000);
-            }
-            
-            setTimeout(openBrowser, 1000);
-        </script>
-        This is body
-    </body>
+                // get servers
+                serverList = JSON.parse(localStorage.getItem('server'));
+                
+                chooseServer();
+            }, 100);
+        });
+        
+        $(document).on('click', "#btn_submit_server", function(e) {
+            e.preventDefault();
+            var servers = new Object();
+            servers.primary = $("#server_primary").val();
+            servers.secondary = $("#server_secondary").val();
+            localStorage.setItem('server', JSON.stringify(servers));
+            $("#dialog_server").popup("close");
+        });
+        
+    </script>
+</head>
+
+<body>
+    <div data-role="page">
+        
+        <div role="main" class="ui-content" style="overflow: hidden;">
+            <!-- >>>>>> -->
+            <!-- SERVER -->
+            <!-- >>>>>> -->
+            <a id='dialog_server_A' href="#dialog_server" data-rel="dialog" data-transition="pop" style='display:none;'></a>
+            <div data-role="popup" id="dialog_server" data-overlay-theme="b" data-theme="b" data-dismissible="false" class="dialog">
+                <form>
+                    <div style="padding:10px 20px;">
+                      <h3>Specify Server IP Address</h3>
+                      <input type="text" name="server_primary" id="server_primary" value="" placeholder="Primary Server (required)" />
+                      <input type="text" name="server_secondary" id="server_secondary" value="" placeholder="Secondary Server (optional)" />
+                      <button id="btn_submit_server" type="submit" data-theme="b" style="margin-top: 1em;">OK</button>
+                    </div>
+                </form>
+            </div>
+            <!-- <<<<<< -->
+            <!-- SERVER -->
+            <!-- <<<<<< -->
+        </div>
+    </div>
+    
+    <div id="include_bubble"></div>
+    
+</body>
 </html>

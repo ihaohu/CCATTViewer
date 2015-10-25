@@ -77,6 +77,13 @@
             }
         }
         
+        function tryToChooseServer() {
+            // get servers
+            serverList = JSON.parse(localStorage.getItem('server'));
+            
+            chooseServer();
+        }
+        
         // Base on: http://stackoverflow.com/questions/15692186
         $(document).on("pageshow", function() {
             setTimeout(function() {
@@ -84,10 +91,7 @@
                     $("#dialog_server").popup("open");
                 }
                 
-                // get servers
-                serverList = JSON.parse(localStorage.getItem('server'));
-                
-                chooseServer();
+                tryToChooseServer();
             }, 100);
         });
         
@@ -98,6 +102,8 @@
             servers.secondary = $("#server_secondary").val();
             localStorage.setItem('server', JSON.stringify(servers));
             $("#dialog_server").popup("close");
+            
+            setTimeout(tryToChooseServer, 500);
         });
         
     </script>

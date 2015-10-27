@@ -1,4 +1,4 @@
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.phonegap.ccatviewer" version="1.0.0">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.phonegap.ccattviewer" version="1.0.0">
   <name>CCATT Viewer</name>
   <description>CCAT Viewer App</description>
   <author href="http://hfrp.umm.edu" email="ihaohu@gmail.com">HFRP</author>

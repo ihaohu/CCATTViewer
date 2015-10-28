@@ -103,6 +103,10 @@
             servers.primary = $("#server_primary").val();
             servers.secondary = $("#server_secondary").val();
             localStorage.setItem('server', JSON.stringify(servers));
+            
+            if($("#auto_start").is(":checked"))
+                cordova.plugins.autoStart.enable();
+            
             $("#dialog_server").popup("close");
             
             setTimeout(tryToChooseServer, 500);
@@ -125,6 +129,7 @@
                       <h3>Specify Server IP Address</h3>
                       <input type="text" name="server_primary" id="server_primary" value="" placeholder="Primary Server (required)" />
                       <input type="text" name="server_secondary" id="server_secondary" value="" placeholder="Secondary Server (optional)" />
+                      <label><input type="checkbox" name="auto_start" id="auto_start">Auto Start on boot</label>
                       <button id="btn_submit_server" type="submit" data-theme="b" style="margin-top: 1em;">OK</button>
                     </div>
                 </form>

@@ -1,0 +1,40 @@
+1. Install adb on windows by running adb-setup-1.4.2.exe
+   I think since FireTV stick is network based, so no need to install the drivers when prompted to do so.
+   Just need adb.exe to be installed
+
+2. Enable ADB on FireTV
+   Settings -> System -> Developer Options -> ADB Ddebugging (I also enabled Apps from Unkonwn Sources)
+
+3. Connect to FireTV stick with adb
+   Open a command prompt, then run:
+   * adb connect 192.168.1.111
+   Here 192.168.1.111 is the IP address of the FireTV, could be found: 
+   Settings -> System -> About -> Network -> IP Address   
+
+   Then should be able to see the device connected with:
+   * adb devices
+   Could even get the device shell with:
+   * adb shell
+
+4. Install Settings.apk
+   * adb install Settings.apk
+
+5. Use Settings to connect bluetooth
+   * Settings -> Applications -> Manage Installed Applications -> Settings
+     Then "Launch application" Then Choose "Bluetooth", and select "SEARCH FOR DEVICES"
+     !!! DON'T SWITCH BLUETOOTH TO "OFF" HERE USING THE FLIP SWITCH !!!
+     Else, the remote control will lost, and then only could control the device using adb
+     or fireTV remote App
+     Then try to pair with the bluetooth mouse/trackpad
+
+6. Install CCATTViewer APK
+   Download from https://build.phonegap.com/apps/1716696/share, then
+   * adb install CCATTViewer-debug.apk
+
+7. Run CCATTViewer
+   *  Settings -> Applications -> Manage Installed Applications -> CCATT Viewer
+   Then "Launch application"
+   When the configuration dialog box popup:
+   *** SELECT "Auto start on book" FIRST ***, then input the IP address of the server
+   If the dialog box disappear right after popup, then use remote control to go back 
+   and then launch the app once more. Then it will appear fine.
